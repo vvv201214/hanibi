@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Param, Body, NotFoundException } from '@nestjs/common';
 import { FormService } from './form.service';
 import { Form } from './form.schema';
 
@@ -9,12 +9,24 @@ export class FormController {
   //post request
   @Post()
   async submitForm(@Body() formData: Form): Promise<Form> {
-    return this.formService.submitForm(formData);
+    try {
+      return await this.formService.submitForm(formData);
+    } catch (error) {
+      throw new Error('Failed to submit form'); // error response
+    }
   }
 
   //get request
   @Get(':username')
   async getFormByUsername(@Param('username') username: string): Promise<Form | null> {
-    return this.formService.getFormByUsername(username);
+    try {
+      const form = await this.formService.getFormByUsername(username);
+      if (!form) {
+        throw new NotFoundException(`Form with username ${username} not found`);
+      }
+      return form;
+    } catch (error) {
+      throw new Error('Failed to retrieve form'); // error response
+    }
   }
 }

@@ -39,6 +39,10 @@ const FormPage = () => {
 
   const handleSubmit = async () => {
     formData.username = username;
+    if(!formData.phoneNumber || !formData.email || !formData.name || !formData.dob){
+      window.alert("please fill all details.");
+      return;
+    }
     try {
       // Implement form submission
       const response = await fetch('http://localhost:8080/forms', {

@@ -9,12 +9,20 @@ export class FormService {
  
   // insert form data in database
   async submitForm(data: Form): Promise<Form> {
-    const createdForm = new this.formModel(data);
-    return createdForm.save();
+    try {
+      const createdForm = new this.formModel(data);
+      return createdForm.save();
+    } catch (error) {
+      throw new Error('Failed to submit form'); // error response
+    }
   }
 
   // get data by username from database
   async getFormByUsername(username: string): Promise<Form | null> {
-    return this.formModel.findOne({ username }).exec();
+    try {
+      return this.formModel.findOne({ username }).exec();
+    } catch (error) {
+      throw new Error('Failed to fetch user data'); // error response
+    }
   }
 }
